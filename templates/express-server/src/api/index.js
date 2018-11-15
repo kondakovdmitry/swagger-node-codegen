@@ -36,8 +36,11 @@ app.use((req, res, next) => {
 // catch errors
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  log.error(`Error ${status} (${err.message}) on ${req.method} ${req.url} with payload ${req.body}.`);
-  res.status(status).send({ status, error: err.message });
+  log.error(`Error ${status} (${err.message}) on ${req.method} ${req.url} with payload ${JSON.stringify(req.body)}.`);
+  if (!err.status) {
+    console.log(err.stack || 'NO STACK');
+  }
+  res.status(status).send(err.data || { status, error: err.message });
 });
 
 module.exports = app;

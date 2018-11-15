@@ -1,5 +1,6 @@
 const express = require('express');
 const Joi = require('joi');
+const helpers = require('../lib/helpers');
 const {{camelCase operation_name}}Service = require('./{{operation_name}}.service');
 
 const router = new express.Router();
@@ -12,7 +13,7 @@ const router = new express.Router();
  * {{{this}}}
  {{/each}}
  */
-router.{{@key}}('{{../../subresource}}', async (req, res) => {
+router.{{@key}}('{{../../subresource}}', helpers.asyncMiddleware(async (req, res) => {
   const options = {
     {{#if ../requestBody}}
     body: req.body,
@@ -47,35 +48,15 @@ router.{{@key}}('{{../../subresource}}', async (req, res) => {
     {{/each}}
   });
 
-  const result = schema.validate(options);
-  if (result.error) {
-    return res.status(400).send({
-      status: 400,
-      error: result.error.details[0].message,
-    })
-  }
+  helpers.validate(schema, options);
 
-  try {
-    const result = await {{camelCase ../../../operation_name}}Service.{{../operationId}}(options);
-    {{#ifNoSuccessResponses ../responses}}
-    res.status(200).send(result.data);
-    {{else}}
-    res.status(result.status || 200).send(result.data);
-    {{/ifNoSuccessResponses}}
-  } catch (err) {
-    {{#ifNoErrorResponses ../responses}}
-    return res.status(500).send({
-      status: 500,
-      error: 'Server Error'
-    });
-    {{else}}
-    return res.status(err.status).send({
-      status: err.status,
-      error: err.error
-    });
-    {{/ifNoErrorResponses}}
-  }
-});
+  const result = await {{camelCase ../../../operation_name}}Service.{{../operationId}}(options);
+  {{#ifNoSuccessResponses ../responses}}
+  res.status(200).send(result.data);
+  {{else}}
+  res.status(result.status || 200).send(result.data);
+  {{/ifNoSuccessResponses}}
+}));
 
     {{/validMethod}}
   {{/each}}
