@@ -12,10 +12,15 @@
  * @return {Promise}
  */
 module.exports.{{../operationId}} = async (options) => {
+  {{#with (lookup ../responses "200")}}
+    {{#with (lookup ./content "application/json")}}
+  return {{> exampleItem schema=schema}};
+    {{/with}}
+  {{else}}
   return {
-    status: 200,
-    data: '{{../operationId}} ok!'
+    status: 204
   };
+  {{/with}}
 };
 
     {{/validMethod}}

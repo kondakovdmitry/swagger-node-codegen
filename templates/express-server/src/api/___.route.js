@@ -52,7 +52,7 @@ router.{{@key}}('{{../../subresource}}', helpers.asyncMiddleware(async (req, res
 
   const result = await {{camelCase ../../../operation_name}}Service.{{../operationId}}(options);
 
-  if (result.status) {
+  if (result && result.status) {
     res.status(result.status || 200).send(result.data);
   } else {
     res.status(200).send(result);
