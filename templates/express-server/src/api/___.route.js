@@ -51,11 +51,12 @@ router.{{@key}}('{{../../subresource}}', helpers.asyncMiddleware(async (req, res
   helpers.validate(schema, options);
 
   const result = await {{camelCase ../../../operation_name}}Service.{{../operationId}}(options);
-  {{#ifNoSuccessResponses ../responses}}
-  res.status(200).send(result.data);
-  {{else}}
-  res.status(result.status || 200).send(result.data);
-  {{/ifNoSuccessResponses}}
+
+  if (result.status) {
+    res.status(result.status || 200).send(result.data);
+  } else {
+    res.status(200).send(result);
+  }
 }));
 
     {{/validMethod}}
