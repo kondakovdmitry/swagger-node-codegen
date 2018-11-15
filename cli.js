@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-
+global.Promise = require('bluebird');
+global.Promise.config({
+  longStackTraces: true,
+});
 const path = require('path');
 const program = require('commander');
 const packageInfo = require('./package.json');
