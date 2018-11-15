@@ -1,5 +1,5 @@
 const express = require('express');
-const {{camelCase operation_name}} = require('../services/{{operation_name}}');
+const {{camelCase operation_name}}Service = require('./{{operation_name}}.service');
 
 const router = new express.Router();
 
@@ -32,7 +32,7 @@ router.{{@key}}('{{../../subresource}}', async (req, res, next) => {
   };
 
   try {
-    const result = await {{camelCase ../../../operation_name}}.{{../operationId}}(options);
+    const result = await {{camelCase ../../../operation_name}}Service.{{../operationId}}(options);
     {{#ifNoSuccessResponses ../responses}}
     res.status(200).send(result.data);
     {{else}}

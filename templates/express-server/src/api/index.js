@@ -1,3 +1,8 @@
+global.Promise = require('bluebird');
+global.Promise.config({
+  longStackTraces: true,
+});
+
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -16,9 +21,9 @@ app.use(cookieParser());
  */
 {{#each @root.swagger.endpoints}}
 {{#endsWith @root.swagger.basePath '/'}}
-app.use('{{@root.swagger.basePath}}{{..}}', require('./routes/{{..}}'));
+app.use('{{@root.swagger.basePath}}{{..}}', require('./{{..}}.route'));
 {{else}}
-app.use('{{@root.swagger.basePath}}/{{..}}', require('./routes/{{..}}'));
+app.use('{{@root.swagger.basePath}}/{{..}}', require('./{{..}}.route'));
 {{/endsWith}}
 {{/each}}
 
