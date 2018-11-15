@@ -5,7 +5,7 @@
  * @param {Object} options
 {{#each ../parameters}}
 {{#if this.name}}
- * @param {{../../../../openbrace}}{{capitalize type}}{{../../../../closebrace}} options.{{name}} {{inline description}}
+ * @param {{../../../../openbrace}}{{jsType type}}{{../../../../closebrace}} options.{{name}} {{inline description}}
 {{/if}}
 {{/each}}
  * @throws {Error}

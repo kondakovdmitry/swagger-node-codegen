@@ -1,4 +1,5 @@
 const express = require('express');
+const Joi = require('joi');
 const {{camelCase operation_name}}Service = require('./{{operation_name}}.service');
 
 const router = new express.Router();
@@ -14,22 +15,39 @@ const router = new express.Router();
 router.{{@key}}('{{../../subresource}}', async (req, res) => {
   const options = {
     {{#if ../requestBody}}
-    body: req.body{{#compare (lookup ../parameters 'length') 0 operator = '>' }},{{/compare}}
+    body: req.body,
     {{/if}}
     {{#each ../parameters}}
       {{#equal this.in "query"}}
-    {{{quote ../name}}}: req.query['{{../name}}']{{#unless @last}},{{/unless}}
+    {{{quote ../name}}}: req.query['{{../name}}'],
       {{/equal}}
       {{#equal this.in "path"}}
-    {{{quote ../name}}}: req.params['{{../name}}']{{#unless @last}},{{/unless}}
+    {{{quote ../name}}}: req.params['{{../name}}'],
       {{/equal}}
       {{#match @../key "(post|put)"}}
         {{#equal ../in "body"}}
-    {{{quote ../name}}}: req.body['{{../name}}']{{#unless @last}},{{/unless}}
+    {{{quote ../name}}}: req.body['{{../name}}'],
         {{/equal}}
       {{/match}}
     {{/each}}
   };
+
+  const schema = Joi.object().keys({
+    {{#if ../requestBody}}
+    body: Joi.object(),
+    {{/if}}
+    {{#each ../parameters}}
+    {{{quote name}}}: {{joiDefinition schema required}},
+    {{/each}}
+  });
+
+  const result = schema.validate(options);
+  if (result.error) {
+    return res.status(400).send({
+      status: 400,
+      error: result.error.details[0].message,
+    })
+  }
 
   try {
     const result = await {{camelCase ../../../operation_name}}Service.{{../operationId}}(options);
