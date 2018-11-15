@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   log.error(`Error ${status} (${err.message}) on ${req.method} ${req.url} with payload ${req.body}.`);
-  res.status(status).send({ status, error: 'Server error' });
+  res.status(status).send({ status, error: err.message });
 });
 
 module.exports = app;

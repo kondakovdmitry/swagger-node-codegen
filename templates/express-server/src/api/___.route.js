@@ -34,10 +34,16 @@ router.{{@key}}('{{../../subresource}}', async (req, res) => {
 
   const schema = Joi.object().keys({
     {{#if ../requestBody}}
-    body: Joi.object(),
+    body:
+      {{#with (lookup ../requestBody/content "application/json")}}
+      {{> joiDefinition schema=schema required=true}}
+      {{/with}}
+      {{#with (lookup ../requestBody/content "multipart/form-data")}}
+      {{> joiDefinition schema=schema required=true}}
+      {{/with}},
     {{/if}}
     {{#each ../parameters}}
-    {{{quote name}}}: {{joiDefinition schema required}},
+    {{{quote name}}}: {{> joiDefinition schema=schema required=required}},
     {{/each}}
   });
 
